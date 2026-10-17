@@ -16,7 +16,8 @@ static int check(t_coder *coder)
     if (!coder->data->simulation_end)
     {
         coder->data->simulation_end = 1;
-        printf("%ld %d burned out\n", now - coder->data->start_time, coder->id);
+        printf("%ld %d \33[31mburned out\33[0m\n",
+            now - coder->data->start_time, coder->id);
     }
 
     pthread_mutex_unlock(&coder->data->print_mutex);

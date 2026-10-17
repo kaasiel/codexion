@@ -118,8 +118,8 @@ int acquire_dongles(t_coder *c)
     c->left->is_taken = 1;
     c->right->is_taken = 1;
     pthread_mutex_unlock(&d->sched_mutex);
-    printlog(c, "has taken a dongle");
-    printlog(c, "has taken a dongle");
+    printlog(c, "\33[34mhas taken a dongle\33[0m");
+    printlog(c, "\33[34mhas taken a dongle\33[0m");
     return (1);
 }
 

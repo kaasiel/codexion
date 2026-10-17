@@ -16,6 +16,7 @@ SRCS		= $(INC_DIR)/coders.c \
 		  $(SRC_DIR)/args.c \
 		  $(SRC_DIR)/main.c
 OBJS		= $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRCS))
+DEPS		= $(OBJS:.o=.d)
 
 all: $(NAME)
 
@@ -24,7 +25,9 @@ $(NAME): $(OBJS)
 
 $(OBJ_DIR)/%.o: %.c
 	mkdir -p $(@D)
-	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
+	$(CC) $(CFLAGS) -MMD -MP -I$(INC_DIR) -c $< -o $@
+
+-include $(DEPS)
 
 clean:
 	rm -rf $(OBJ_DIR)
