@@ -7,13 +7,15 @@ INC_DIR		= includes
 SRC_DIR		= srcs
 OBJ_DIR		= obj
 
-SRCS		= $(INC_DIR)/coders.c \
-		  $(INC_DIR)/strategy.c \
-		  $(INC_DIR)/init.c \
-		  $(INC_DIR)/monitor.c \
-		  $(INC_DIR)/scheduler.c \
-		  $(INC_DIR)/helper.c \
+SRCS		= $(SRC_DIR)/coder.c \
+		  $(SRC_DIR)/strategy.c \
+		  $(SRC_DIR)/init.c \
+		  $(SRC_DIR)/monitor.c \
+		  $(SRC_DIR)/scheduler.c \
+		  $(SRC_DIR)/helper.c \
 		  $(SRC_DIR)/args.c \
+		  $(SRC_DIR)/args_utils.c \
+		  $(SRC_DIR)/acquire.c \
 		  $(SRC_DIR)/main.c
 OBJS		= $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRCS))
 DEPS		= $(OBJS:.o=.d)
