@@ -6,7 +6,7 @@
 /*   By: belaindr <belaindr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/19 10:00:00 by belaindr          #+#    #+#             */
-/*   Updated: 2026/10/19 08:12:20 by belaindr         ###   ########.fr       */
+/*   Updated: 2026/10/19 09:31:14 by belaindr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ static void	finish(t_coder *c, int *ids, int n, int taken)
 	window_unlock(c->data, ids, n);
 	if (taken)
 	{
-		printlog(c, "\033[1;34mhas taken a dongle\033[0m");
-		printlog(c, "\033[1;34mhas taken a dongle\033[0m");
+		printlog(c, "\033[34mhas taken a dongle\033[0m");
+		printlog(c, "\033[34mhas taken a dongle\033[0m");
 	}
 }
 

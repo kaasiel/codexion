@@ -6,7 +6,7 @@
 /*   By: belaindr <belaindr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/19 10:00:00 by belaindr          #+#    #+#             */
-/*   Updated: 2026/10/19 10:00:00 by belaindr         ###   ########.fr       */
+/*   Updated: 2026/10/19 09:07:23 by belaindr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,7 @@ void	release_dongles(t_coder *c);
 void	set_priority(t_coder *c);
 int		can_take(t_coder *c);
 int		sim_end(t_data *d);
+int		value_verifier(t_args args);
 void	wait_dongle(t_dongles *d);
 int		heap_before(t_coder *a, t_coder *b);
 void	heap_swap(t_coder **a, t_coder **b);

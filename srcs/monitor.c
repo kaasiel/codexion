@@ -6,7 +6,7 @@
 /*   By: belaindr <belaindr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/18 07:04:00 by belaindr          #+#    #+#             */
-/*   Updated: 2026/10/19 08:05:43 by belaindr         ###   ########.fr       */
+/*   Updated: 2026/10/19 09:32:30 by belaindr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	check(t_coder *coder)
 	if (!coder->data->simulation_end)
 	{
 		coder->data->simulation_end = 1;
-		printf("%ld %d \033[1;31mburned out\033[0m\n",
+		printf("%ld %d \033[31mburned out\033[0m\n",
 			now - coder->data->start_time, coder->id);
 	}
 	pthread_mutex_unlock(&coder->data->print_mutex);

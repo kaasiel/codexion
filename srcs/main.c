@@ -6,11 +6,12 @@
 /*   By: belaindr <belaindr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/19 10:00:00 by belaindr          #+#    #+#             */
-/*   Updated: 2026/10/19 10:00:00 by belaindr         ###   ########.fr       */
+/*   Updated: 2026/10/19 09:08:17 by belaindr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
+#include "helper.h"
 
 static int	init_data(t_args args, t_data *data)
 {
@@ -72,6 +73,8 @@ int	main(int argc, char **argv)
 	if (parse_args(argc, argv, &args) != 0)
 		return (1);
 	if (init_simulation(args, &data, &dongles, &coders) != 0)
+		return (1);
+	if (value_verifier(args) != 0)
 		return (1);
 	reset_clock(coders, &data, args.number_of_coders);
 	launcher(coders, args.number_of_coders);
