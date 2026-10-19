@@ -6,7 +6,7 @@
 /*   By: belaindr <belaindr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/18 07:29:28 by belaindr          #+#    #+#             */
-/*   Updated: 2026/10/18 07:29:28 by belaindr         ###   ########.fr       */
+/*   Updated: 2026/10/19 10:35:23 by belaindr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ static int	append_digit(long *result, int digit, const char *s)
 {
 	if (*result > (LONG_MAX - digit) / 10)
 	{
-		fprintf(stderr, "codexion: error: value out of range: %s\n", s);
+		error_printer("codexion: error: value out of range:");
+		printf("%s", s);
 		return (-1);
 	}
 	*result = *result * 10 + digit;
@@ -46,10 +47,13 @@ static int	str_to_long(const char *s, long *out)
 	int		digit;
 
 	if (s[0] == '-')
+	{
+		error_printer("this program does not take negative values");
 		return (-1);
+	}
 	if (!is_all_digits(s))
 	{
-		fprintf(stderr, "codexion: error: not a valid integer: %s\n", s);
+		error_printer("codexion: error: not a valid integer");
 		return (-1);
 	}
 	result = 0;
@@ -71,7 +75,8 @@ int	parse_field(const char *s, const char *name, long min, long *dest)
 		return (-1);
 	if (*dest < min)
 	{
-		fprintf(stderr, "codexion: error: %s must be >= %ld (got %ld)\n",
+		fprintf(stderr, "\033[31mcodexion: error:"
+			"%s must be >= %ld (got %ld)\033[0m\n",
 			name, min, *dest);
 		return (-1);
 	}
