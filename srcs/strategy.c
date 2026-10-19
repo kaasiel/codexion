@@ -5,19 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: belaindr <belaindr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/18 07:25:55 by belaindr          #+#    #+#             */
-/*   Updated: 2026/10/18 07:27:24 by belaindr         ###   ########.fr       */
+/*   Created: 2026/10/19 10:00:00 by belaindr          #+#    #+#             */
+/*   Updated: 2026/10/19 10:00:00 by belaindr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
-
-static int	before(t_coder *a, t_coder *b)
-{
-	if (a->key != b->key)
-		return (a->key < b->key);
-	return (a->ticket < b->ticket);
-}
 
 static int	ready(t_dongles *d, t_coder *q)
 {
@@ -31,17 +24,10 @@ static int	ready(t_dongles *d, t_coder *q)
 
 static int	is_first(t_dongles *d, t_coder *c)
 {
-	int	i;
+	t_coder	*top;
 
-	i = 0;
-	while (i < d->queue_size)
-	{
-		if (d->queue[i] != c && before(d->queue[i], c)
-			&& ready(d, d->queue[i]))
-			return (0);
-		i++;
-	}
-	return (1);
+	top = heap_top(d);
+	return (top == c || !ready(d, top));
 }
 
 int	can_take(t_coder *c)
@@ -55,18 +41,45 @@ int	can_take(t_coder *c)
 		&& is_first(c->left, c) && is_first(c->right, c));
 }
 
-void	release_dongles(t_coder *c)
+void	set_priority(t_coder *c)
 {
 	t_data	*d;
-	long	until;
+	long	deadline;
 
 	d = c->data;
-	until = get_time() + d->cooldown;
-	pthread_mutex_lock(&d->sched_mutex);
-	c->left->is_taken = 0;
-	c->right->is_taken = 0;
-	c->left->availabilitytime = until;
-	c->right->availabilitytime = until;
-	pthread_cond_broadcast(&d->sched_cond);
-	pthread_mutex_unlock(&d->sched_mutex);
+	pthread_mutex_lock(&c->mutex);
+	deadline = c->last_compile_start + c->time_to_burntout;
+	pthread_mutex_unlock(&c->mutex);
+	pthread_mutex_lock(&d->ticket_mutex);
+	c->ticket = d->ticket++;
+	pthread_mutex_unlock(&d->ticket_mutex);
+	c->key = c->ticket;
+	if (d->strategy == AL_EDF)
+		c->key = deadline;
+}
+
+void	release_dongles(t_coder *c)
+{
+	t_dongles	*first;
+	t_dongles	*second;
+	long		until;
+
+	first = c->left;
+	second = c->right;
+	if (first->id > second->id)
+	{
+		first = c->right;
+		second = c->left;
+	}
+	until = get_time() + c->data->cooldown;
+	pthread_mutex_lock(&first->mutex);
+	pthread_mutex_lock(&second->mutex);
+	first->is_taken = 0;
+	second->is_taken = 0;
+	first->availabilitytime = until;
+	second->availabilitytime = until;
+	pthread_cond_broadcast(&first->cond);
+	pthread_cond_broadcast(&second->cond);
+	pthread_mutex_unlock(&second->mutex);
+	pthread_mutex_unlock(&first->mutex);
 }

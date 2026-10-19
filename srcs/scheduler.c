@@ -6,7 +6,7 @@
 /*   By: belaindr <belaindr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/18 07:17:37 by belaindr          #+#    #+#             */
-/*   Updated: 2026/10/18 07:25:20 by belaindr         ###   ########.fr       */
+/*   Updated: 2026/10/19 07:57:11 by belaindr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	*routine(void *arg)
 	coder = (t_coder *)arg;
 	if (coder->left == coder->right)
 	{
-		printlog(coder, "has taken a dongle");
+		printlog(coder, "\33[32mhas taken a dongle\33[0m");
 		while (!should_stop(coder))
 			usleep(1000);
 		return (NULL);
@@ -73,7 +73,7 @@ void	*routine(void *arg)
 		if (should_stop(coder))
 			break ;
 		debug(coder);
-		refrcatinng(coder);
+		refactoring(coder);
 	}
 	return (NULL);
 }

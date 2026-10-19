@@ -5,91 +5,74 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: belaindr <belaindr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/18 07:26:05 by belaindr          #+#    #+#             */
-/*   Updated: 2026/10/18 07:26:05 by belaindr         ###   ########.fr       */
+/*   Created: 2026/10/19 10:00:00 by belaindr          #+#    #+#             */
+/*   Updated: 2026/10/19 08:12:20 by belaindr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void	queue_dongles(t_dongles *d, t_coder *c, int add)
+static int	try_take(t_coder *c)
 {
-	int	i;
-	int	j;
+	if (!can_take(c))
+		return (0);
+	heap_remove(c->left, c);
+	heap_remove(c->right, c);
+	c->left->is_taken = 1;
+	c->right->is_taken = 1;
+	return (1);
+}
 
-	if (add)
-		d->queue[d->queue_size++] = c;
-	else
+static t_dongles	*pick_wait(t_coder *c)
+{
+	if (c->right->is_taken && !c->left->is_taken)
+		return (c->right);
+	return (c->left);
+}
+
+static void	wait_turn(t_coder *c, int *ids, int n)
+{
+	t_dongles	*d;
+
+	d = pick_wait(c);
+	window_unlock_but(c->data, ids, n, d->id);
+	wait_dongle(d);
+	pthread_mutex_unlock(&d->mutex);
+	window_lock(c->data, ids, n);
+}
+
+static void	finish(t_coder *c, int *ids, int n, int taken)
+{
+	if (!taken)
 	{
-		i = 0;
-		j = 0;
-		while (i < d->queue_size)
-		{
-			if (d->queue[i] != c)
-				d->queue[j++] = d->queue[i];
-			i++;
-		}
-		d->queue_size = j;
+		heap_remove(c->left, c);
+		heap_remove(c->right, c);
 	}
-}
-
-int	sim_end(t_data *d)
-{
-	int	stop;
-
-	pthread_mutex_lock(&d->print_mutex);
-	stop = d->simulation_end;
-	pthread_mutex_unlock(&d->print_mutex);
-	return (stop);
-}
-
-void	wait_ms(t_data *d, long ms)
-{
-	struct timeval	tv;
-	struct timespec	ts;
-
-	gettimeofday(&tv, NULL);
-	ts.tv_sec = tv.tv_sec + ms / 1000;
-	ts.tv_nsec = (tv.tv_usec + (ms % 1000) * 1000) * 1000;
-	if (ts.tv_nsec >= 1000000000L)
+	window_unlock(c->data, ids, n);
+	if (taken)
 	{
-		ts.tv_sec++;
-		ts.tv_nsec -= 1000000000L;
+		printlog(c, "\033[1;34mhas taken a dongle\033[0m");
+		printlog(c, "\033[1;34mhas taken a dongle\033[0m");
 	}
-	pthread_cond_timedwait(&d->sched_cond, &d->sched_mutex, &ts);
-}
-
-static void	prepare_acquire(t_coder *c, t_data *d, long deadline)
-{
-	c->ticket = d->ticket++;
-	c->key = c->ticket;
-	if (d->strategy == AL_EDF)
-		c->key = deadline;
-	queue_dongles(c->left, c, 1);
-	queue_dongles(c->right, c, 1);
 }
 
 int	acquire_dongles(t_coder *c)
 {
-	t_data	*d;
-	long	deadline;
+	int	ids[4];
+	int	n;
+	int	taken;
 
-	d = c->data;
-	pthread_mutex_lock(&c->mutex);
-	deadline = c->last_compile_start + c->time_to_burntout;
-	pthread_mutex_unlock(&c->mutex);
-	pthread_mutex_lock(&d->sched_mutex);
-	prepare_acquire(c, d, deadline);
-	while (!can_take(c) && !sim_end(d))
-		wait_ms(d, 1);
-	queue_dongles(c->left, c, 0);
-	queue_dongles(c->right, c, 0);
-	if (sim_end(d))
-		return (pthread_mutex_unlock(&d->sched_mutex), 0);
-	c->left->is_taken = 1;
-	c->right->is_taken = 1;
-	pthread_mutex_unlock(&d->sched_mutex);
-	printlog(c, "\33[34mhas taken a dongle\33[0m");
-	printlog(c, "\33[34mhas taken a dongle\33[0m");
-	return (1);
+	set_priority(c);
+	n = window_ids(c, ids);
+	window_lock(c->data, ids, n);
+	heap_push(c->left, c);
+	heap_push(c->right, c);
+	taken = try_take(c);
+	while (!taken && !sim_end(c->data))
+	{
+		wait_turn(c, ids, n);
+		taken = try_take(c);
+	}
+	finish(c, ids, n, taken);
+	return (taken);
 }

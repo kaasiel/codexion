@@ -16,6 +16,9 @@ SRCS		= $(SRC_DIR)/coder.c \
 		  $(SRC_DIR)/args.c \
 		  $(SRC_DIR)/args_utils.c \
 		  $(SRC_DIR)/acquire.c \
+		  $(SRC_DIR)/heap_utils.c \
+		  $(SRC_DIR)/heap.c \
+		  $(SRC_DIR)/window.c \
 		  $(SRC_DIR)/main.c
 OBJS		= $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRCS))
 DEPS		= $(OBJS:.o=.d)

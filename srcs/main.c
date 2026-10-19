@@ -5,53 +5,61 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: belaindr <belaindr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/18 07:31:05 by belaindr          #+#    #+#             */
-/*   Updated: 2026/10/18 07:31:41 by belaindr         ###   ########.fr       */
+/*   Created: 2026/10/19 10:00:00 by belaindr          #+#    #+#             */
+/*   Updated: 2026/10/19 10:00:00 by belaindr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-static int	init_simulation(t_args args, t_data *data,
-		t_dongles **dongles, t_coder **coders)
+static int	init_data(t_args args, t_data *data)
 {
-	int	i;
-
 	data->simulation_end = 0;
-	data->start_time = get_time();
 	data->strategy = args.scheduler;
 	data->cooldown = args.dongle_cooldown;
 	data->ticket = 0;
-	pthread_mutex_init(&data->sched_mutex, NULL);
-	pthread_cond_init(&data->sched_cond, NULL);
-	pthread_mutex_init(&data->print_mutex, NULL);
-	*dongles = calloc((size_t)args.number_of_coders, sizeof(**dongles));
-	*coders = calloc((size_t)args.number_of_coders, sizeof(**coders));
-	if (*dongles == NULL || *coders == NULL)
-		return (free(*dongles), free(*coders), 1);
-	if (init_fork(args, *dongles) != 0
-		|| init_coder(*coders, *dongles, args, data) != 0)
-		return (free(*dongles), free(*coders), 1);
+	data->nb = args.number_of_coders;
 	data->start_time = get_time();
-	i = 0;
-	while (i < args.number_of_coders)
-		(*coders)[i++].last_compile_start = data->start_time;
+	if (pthread_mutex_init(&data->print_mutex, NULL) != 0)
+		return (1);
+	if (pthread_mutex_init(&data->ticket_mutex, NULL) != 0)
+		return (pthread_mutex_destroy(&data->print_mutex), 1);
 	return (0);
 }
 
-static void	destroy_simulation(t_args args, t_data *data,
-		t_dongles *dongles, t_coder *coders)
+static int	alloc_all(t_args args, t_dongles **dongles, t_coder **coders)
 {
-	int	i;
+	size_t	n;
 
-	i = 0;
-	while (i < args.number_of_coders)
-		pthread_mutex_destroy(&coders[i++].mutex);
-	pthread_mutex_destroy(&data->print_mutex);
-	pthread_mutex_destroy(&data->sched_mutex);
-	pthread_cond_destroy(&data->sched_cond);
-	free(dongles);
-	free(coders);
+	n = (size_t)args.number_of_coders;
+	*dongles = malloc(sizeof(**dongles) * n);
+	*coders = malloc(sizeof(**coders) * n);
+	if (*dongles == NULL || *coders == NULL)
+		return (free(*dongles), free(*coders), 1);
+	memset(*dongles, 0, sizeof(**dongles) * n);
+	memset(*coders, 0, sizeof(**coders) * n);
+	return (0);
+}
+
+static int	init_simulation(t_args args, t_data *data,
+		t_dongles **dongles, t_coder **coders)
+{
+	if (init_data(args, data) != 0)
+		return (1);
+	if (alloc_all(args, dongles, coders) != 0)
+	{
+		pthread_mutex_destroy(&data->print_mutex);
+		pthread_mutex_destroy(&data->ticket_mutex);
+		return (1);
+	}
+	data->dongles = *dongles;
+	if (init_fork(args, *dongles) != 0
+		|| init_coder(*coders, *dongles, args, data) != 0)
+	{
+		destroy_simulation(args, data, *dongles, *coders);
+		return (1);
+	}
+	return (0);
 }
 
 int	main(int argc, char **argv)
@@ -65,6 +73,7 @@ int	main(int argc, char **argv)
 		return (1);
 	if (init_simulation(args, &data, &dongles, &coders) != 0)
 		return (1);
+	reset_clock(coders, &data, args.number_of_coders);
 	launcher(coders, args.number_of_coders);
 	destroy_simulation(args, &data, dongles, coders);
 	return (0);
