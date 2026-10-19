@@ -6,7 +6,7 @@
 /*   By: belaindr <belaindr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/19 08:48:32 by belaindr          #+#    #+#             */
-/*   Updated: 2026/10/19 12:06:24 by belaindr         ###   ########.fr       */
+/*   Updated: 2026/10/19 12:12:35 by belaindr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	ft_strlen(char *c)
 
 int	value_verifier(t_args args)
 {
-	if (args.number_of_coders > 40)
+	if (args.number_of_coders > 200)
 	{
 		fprintf(stderr,
 			"\033[31mThe number of coder should not exceed 40.\033[0m\n");
@@ -54,15 +54,15 @@ void	error_printer(char *message)
 	fprintf(stderr, "\033[31m%s\033[0m\n", message);
 }
 
-void    ft_usleep(long  nbr, t_data *data)
+void	ft_usleep(long ms, t_data *data)
 {
-    long    temps;
-    temps = nbr;
-    while (temps >=0)
-    {
-        if (sim_end(data))
-            return;
-        usleep(1000);
-        temps = temps / 100;
-    }
+	long	end;
+
+	end = get_time() + ms;
+	while (get_time() < end)
+	{
+		if (sim_end(data))
+			return ;
+		usleep(500);
+	}
 }

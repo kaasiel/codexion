@@ -119,7 +119,7 @@ void	heap_push(t_dongles *d, t_coder *c);
 void	heap_fix(t_dongles *d, int i);
 void	heap_remove(t_dongles *d, t_coder *c);
 t_coder	*heap_top(t_dongles *d);
-void    ft_usleep(long  nbr, t_data *data);
+void	ft_usleep(long nbr, t_data *data);
 void	error_printer(char *message);
 int		window_ids(t_coder *c, int *ids);
 void	window_lock(t_data *d, int *ids, int n);
