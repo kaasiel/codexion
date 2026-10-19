@@ -6,7 +6,7 @@
 /*   By: belaindr <belaindr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/19 08:48:32 by belaindr          #+#    #+#             */
-/*   Updated: 2026/10/19 10:36:16 by belaindr         ###   ########.fr       */
+/*   Updated: 2026/10/19 12:06:24 by belaindr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,17 @@ int	value_verifier(t_args args)
 void	error_printer(char *message)
 {
 	fprintf(stderr, "\033[31m%s\033[0m\n", message);
+}
+
+void    ft_usleep(long  nbr, t_data *data)
+{
+    long    temps;
+    temps = nbr;
+    while (temps >=0)
+    {
+        if (sim_end(data))
+            return;
+        usleep(1000);
+        temps = temps / 100;
+    }
 }
