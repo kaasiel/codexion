@@ -6,7 +6,7 @@
 /*   By: belaindr <belaindr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/19 08:48:32 by belaindr          #+#    #+#             */
-/*   Updated: 2026/10/19 12:12:35 by belaindr         ###   ########.fr       */
+/*   Updated: 2026/10/21 22:54:42 by belaindr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	value_verifier(t_args args)
 	if (args.number_of_coders > 200)
 	{
 		fprintf(stderr,
-			"\033[31mThe number of coder should not exceed 40.\033[0m\n");
+			"\033[31mThe number of coder should not exceed 200.\033[0m\n");
 		return (-1);
 	}
 	if (args.dongle_cooldown >= INT_MAX

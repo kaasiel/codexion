@@ -6,7 +6,7 @@
 /*   By: belaindr <belaindr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/18 07:28:50 by belaindr          #+#    #+#             */
-/*   Updated: 2026/10/19 11:31:44 by belaindr         ###   ########.fr       */
+/*   Updated: 2026/10/21 22:55:24 by belaindr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	parse_scheduler(const char *s, t_scheduler *out)
 		return (0);
 	}
 	fprintf(stderr,
-		"\033[31mscodexion: error: scheduler must"
+		"\033[31mcodexion: error: scheduler must "
 		"be \"fifo\" or \"edf\" (got \"%s\")\033[0m\n",
 		s);
 	return (-1);

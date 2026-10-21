@@ -6,7 +6,7 @@
 /*   By: belaindr <belaindr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/18 07:17:37 by belaindr          #+#    #+#             */
-/*   Updated: 2026/10/19 09:32:17 by belaindr         ###   ########.fr       */
+/*   Updated: 2026/10/21 22:01:02 by belaindr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,10 @@ void	*routine(void *arg)
 	while (!should_stop(coder))
 	{
 		compile(coder);
-		if (should_stop(coder))
-			break ;
 		debug(coder);
 		refactoring(coder);
+		if (should_stop(coder))
+			break ;
 	}
 	return (NULL);
 }
