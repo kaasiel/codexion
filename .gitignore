@@ -4,3 +4,5 @@ obj/
 
 # Executable
 /codexion
+/codexion_asan
+/codexion_tsan
