@@ -1,6 +1,9 @@
 *This project has been created as part of the 42 curriculum by belaindr.*
 
-![codexion](Codexion.png)
+<p align="center">
+  <img src="Codexion.png" alt="Codexion output" width="40%">
+</p>
+
 # Codexion
 
 ## Description
@@ -42,7 +45,8 @@ Compiled with `-Wall -Wextra -Werror -pthread`.
 | `dongle_cooldown` | time (ms) a dongle stays unavailable after release |
 | `scheduler` | `fifo` or `edf` |
 
-**Examples:**
+**Examples:**!
+
 
 ```bash
 ./codexion 5 1500 200 200 200 2 200 fifo
@@ -129,4 +133,5 @@ Example: coders C4 and C1 compete for dongle D0, with `time_to_burnout = 800` an
 - [Dining philosophers problem](https://www.geeksforgeeks.org/operating-systems/dining-philosopher-problem-using-semaphores/)
 - [Threads theory](https://perso.ens-lyon.fr/francois.schwarzentruber/teaching/l3-prog/book/c_thread.html)
 - `man pthread_create`, `man pthread_mutex_lock`, `man pthread_cond_timedwait`, `man gettimeofday`
+
 **AI usage:** an AI assistant was used to help understand the scheduling and synchronisation concepts. The code itself was written and is understood by the author.
