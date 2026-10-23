@@ -16,14 +16,14 @@ static int	check(t_coder *coder)
 {
 	long	last;
 	long	now;
+	int	done;
 
 	pthread_mutex_lock(&coder->mutex);
 	last = coder->last_compile_start;
-	if (coder->max_compile == 0)
-		return (0);
+	done = (coder->max_compile <= 0);
 	pthread_mutex_unlock(&coder->mutex);
 	now = get_time();
-	if (now - last <= coder->time_to_burntout)
+	if (done || now - last <= coder->time_to_burntout)
 		return (0);
 	pthread_mutex_lock(&coder->data->print_mutex);
 	if (!coder->data->simulation_end)
