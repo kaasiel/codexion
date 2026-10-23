@@ -16,7 +16,7 @@ static int	check(t_coder *coder)
 {
 	long	last;
 	long	now;
-	int	done;
+	int		done;
 
 	pthread_mutex_lock(&coder->mutex);
 	last = coder->last_compile_start;
