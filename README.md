@@ -102,6 +102,8 @@ Example: coders C4 and C1 compete for dongle D0, with `time_to_burnout = 800` an
 
 ## Blocking cases handled
 
+-**Coffman's conditions.** Mutual exclusion is required (a dongle has one user at a time) and there is no preemption (a dongle is only released by its holder), so deadlock is prevented by breaking the other two. *Hold and wait* is broken: a coder takes both dongles in one atomic step or none, so it never holds one while waiting for the other. *Circular wait* is broken: mutexes are always locked in increasing dongle id order, and no coder waits while holding a dongle.
+-**Log serialisation.** Every message is printed under `print_mutex`, so two lines never interleave.
 - **Deadlock (circular wait):** a coder never holds one dongle while waiting for the other. It takes both dongles in one atomic step (under the window lock) or none. Mutexes are always locked in increasing dongle id order.
 - **Single coder:** with one coder, both of its dongles are the same one, so it can never compile. It takes the dongle, waits, and burns out as expected.
 - **Head-of-line blocking:** a coder at the top of a heap that cannot start (its other dongle is taken) does not block the coder behind it.
