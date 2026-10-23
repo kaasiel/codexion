@@ -62,7 +62,7 @@ void	*routine(void *arg)
 	coder = (t_coder *)arg;
 	if (coder->left == coder->right)
 	{
-		printlog(coder, "\033[34mhas taken a dongle\033[0m");
+		printlog(coder, "has taken a dongle");
 		while (!should_stop(coder))
 			usleep(1000);
 		return (NULL);

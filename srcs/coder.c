@@ -29,12 +29,12 @@ void	compile(t_coder *coder)
 
 void	debug(t_coder *coder)
 {
-	printlog(coder, "\033[32mis debugging\033[0m");
+	printlog(coder, "is debugging");
 	ft_usleep(coder->time_to_debug, coder->data);
 }
 
 void	refactoring(t_coder *coder)
 {
-	printlog(coder, "\033[36mis refactoring\033[0m");
+	printlog(coder, "is refactoring");
 	ft_usleep(coder->time_to_refactor, coder->data);
 }

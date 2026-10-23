@@ -51,8 +51,8 @@ static void	finish(t_coder *c, int *ids, int n, int taken)
 	window_unlock(c->data, ids, n);
 	if (taken)
 	{
-		printlog(c, "\033[34mhas taken a dongle\033[0m");
-		printlog(c, "\033[34mhas taken a dongle\033[0m");
+		printlog(c, "has taken a dongle");
+		printlog(c, "has taken a dongle");
 	}
 }
 

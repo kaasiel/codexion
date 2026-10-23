@@ -45,7 +45,7 @@ Compiled with `-Wall -Wextra -Werror -pthread`.
 | `dongle_cooldown` | time (ms) a dongle stays unavailable after release |
 | `scheduler` | `fifo` or `edf` |
 
-**Examples:**!
+**Examples:**
 
 
 ```bash
