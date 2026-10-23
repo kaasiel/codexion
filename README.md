@@ -139,4 +139,4 @@ Example: coders C4 and C1 compete for dongle D0, with `time_to_burnout = 800` an
 - [Threads theory](https://perso.ens-lyon.fr/francois.schwarzentruber/teaching/l3-prog/book/c_thread.html)
 - `man pthread_create`, `man pthread_mutex_lock`, `man pthread_cond_timedwait`, `man gettimeofday`
 
-**AI usage:** an AI assistant was used to help understand the scheduling and synchronisation concepts. The code itself was written and is understood by the author.
+**AI usage:** an AI assistant was used to help understand the scheduling and synchronisation concepts. It was also used as a searching tool in order to understand sanitizer usage and looking for documentations.The code itself was written and is understood by the author.
