@@ -19,10 +19,10 @@ static int	check(t_coder *coder)
 
 	pthread_mutex_lock(&coder->mutex);
 	last = coder->last_compile_start;
-	pthread_mutex_unlock(&coder->mutex);
-	now = get_time();
 	if (coder->max_compile == 0)
 		return (0);
+	pthread_mutex_unlock(&coder->mutex);
+	now = get_time();
 	if (now - last <= coder->time_to_burntout)
 		return (0);
 	pthread_mutex_lock(&coder->data->print_mutex);
