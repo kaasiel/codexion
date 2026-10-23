@@ -92,7 +92,7 @@ Only the heap **key** changes between the two schedulers:
 | `fifo` | the ticket | the coder who asked first |
 | `edf` | `last_compile_start + time_to_burnout` | the coder closest to burning out |
 
-- **FIFO** is fair in order of arrival, but it ignores how close a coder is to burning out.
+- **FIFO** is fair in order of arrival, but it ignores how close a coder is to burning out. In my algorithm, if the first coder in th eline can not compile he leaves his place to the second conder ready after him
 - **EDF** (Earliest Deadline First) always serves the coder with the nearest burnout deadline, which keeps coders alive in tight configurations. At the very start all deadlines are equal, so the ticket breaks the tie and EDF behaves like FIFO for the first round.
 
 Example: coders C4 and C1 compete for dongle D0, with `time_to_burnout = 800` and `time_to_compile = 300`. C4 asked first (ticket 6, deadline 1100), C1 asked second (ticket 7, deadline 800).
@@ -102,8 +102,8 @@ Example: coders C4 and C1 compete for dongle D0, with `time_to_burnout = 800` an
 
 ## Blocking cases handled
 
--**Coffman's conditions.** Mutual exclusion is required (a dongle has one user at a time) and there is no preemption (a dongle is only released by its holder), so deadlock is prevented by breaking the other two. *Hold and wait* is broken: a coder takes both dongles in one atomic step or none, so it never holds one while waiting for the other. *Circular wait* is broken: mutexes are always locked in increasing dongle id order, and no coder waits while holding a dongle.
--**Log serialisation.** Every message is printed under `print_mutex`, so two lines never interleave.
+- **Coffman's conditions.** Mutual exclusion is required (a dongle has one user at a time) and there is no preemption (a dongle is only released by its holder), so deadlock is prevented by breaking the other two. *Hold and wait* is broken: a coder takes both dongles in one atomic step or none, so it never holds one while waiting for the other. *Circular wait* is broken: mutexes are always locked in increasing dongle id order, and no coder waits while holding a dongle.
+- **Log serialisation.** Every message is printed under `print_mutex`, so two lines never interleave.
 - **Deadlock (circular wait):** a coder never holds one dongle while waiting for the other. It takes both dongles in one atomic step (under the window lock) or none. Mutexes are always locked in increasing dongle id order.
 - **Single coder:** with one coder, both of its dongles are the same one, so it can never compile. It takes the dongle, waits, and burns out as expected.
 - **Head-of-line blocking:** a coder at the top of a heap that cannot start (its other dongle is taken) does not block the coder behind it.
@@ -123,6 +123,9 @@ Example: coders C4 and C1 compete for dongle D0, with `time_to_burnout = 800` an
 | `coder->mutex` | protects `last_compile_start` and `max_compile`, which are read by the monitor |
 | monitor thread | detects burnout and the end of the simulation |
 | `pthread_join` | the main thread waits for all coder threads and the monitor |
+
+  **example**
+    wo coders taking the same dongle.** Without protection, coders C1 and C2 could both read `is_taken == 0` on the dongle they share and both set it to 1, each believing it owns the dongle. The check (`can_take`) and the update (`is_taken = 1`) are done in one critical section, under the lock of the whole window, so the second coder always sees the dongle as taken.
 
 **Window locking.** To read a consistent state, a coder locks the mutexes of 4 dongles: its left and right dongles, plus the dongle on the far side of each neighbour (`left - 1` and `right + 1`, modulo the number of coders). The ids are sorted and de-duplicated, then locked in increasing order, which guarantees a global lock order and prevents deadlocks. Inside the window, the check and the taking of the dongles are one atomic operation.
 
