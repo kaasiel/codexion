@@ -33,7 +33,7 @@ $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
 $(OBJ_DIR)/%.o: %.c
-	mkdir -p $(@D)
+	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -MMD -MP -I$(INC_DIR) -c $< -o $@
 
 -include $(DEPS)
